@@ -1,0 +1,14 @@
+// Poisson equation on the unit disk: -Δu = 1, u = 0 on the boundary
+border C(t = 0, 2*pi) { x = cos(t); y = sin(t); label = 1; }
+mesh Th = buildmesh(C(50));
+
+fespace Vh(Th, P1);
+Vh u, v;
+
+solve Poisson(u, v)
+    = int2d(Th)(dx(u)*dx(v) + dy(u)*dy(v))
+    - int2d(Th)(1*v)
+    + on(1, u = 0);
+
+cout << "max u = " << u[].max << endl;  // exact: 0.25
+plot(u, fill = true, value = true, wait = true);
